@@ -4162,11 +4162,11 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         </div>
         <div class="rf-coin c1">
           <span class="rico"><svg viewBox="0 0 24 24" fill="none"><path d="M15 4H9a4 4 0 100 8h6a4 4 0 010 8H9M9 4v16M18 8H6M18 16H6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-          <div><b>10%</b><span>Sold Starter</span></div>
+          <div><b>5%</b><span>Sold Starter</span></div>
         </div>
         <div class="rf-coin c2">
           <span class="rico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 6H9.5a3 3 0 000 6h5a3 3 0 010 6H6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-          <div><b>5%</b><span>Sold Pro</span></div>
+          <div><b>10%</b><span>Sold Pro</span></div>
         </div>
         <div class="rf-coin c3">
           <span class="rico"><svg viewBox="0 0 24 24" fill="none"><path d="M17 20a5 5 0 00-10 0M12 12a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
@@ -4234,8 +4234,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
             <div class="rf-tier-ic"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="14" r="7"/><path d="M8 8V4h8v4" stroke="currentColor" stroke-width="1.6" fill="none"/><text x="12" y="17" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">3</text></svg></div>
           </div>
           <h3>Sold Starter Referral</h3>
-          <div class="rf-tier-pct">10%</div>
-          <p>Earn 10% commission on every Sold Starter plan someone buys through your link</p>
+          <div class="rf-tier-pct">5%</div>
+          <p>Earn 5% commission on every Sold Starter plan someone buys through your link</p>
         </div>
 
         <div class="rf-tier t2 reveal">
@@ -4244,8 +4244,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
             <div class="rf-tier-ic"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="14" r="7"/><path d="M8 8V4h8v4" stroke="currentColor" stroke-width="1.6" fill="none"/><text x="12" y="17" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">2</text></svg></div>
           </div>
           <h3>Sold Pro Referral</h3>
-          <div class="rf-tier-pct">5%</div>
-          <p>Earn 5% commission on every Sold Pro plan someone buys through your link</p>
+          <div class="rf-tier-pct">10%</div>
+          <p>Earn 10% commission on every Sold Pro plan someone buys through your link</p>
         </div>
 
         <div class="rf-tier t3 featured reveal">
@@ -6123,9 +6123,9 @@ function goHowItWorks(){
 
 // ── PLANS DATA
 const plans={
-  starter:{name:'Sold Starter',raw:399,price:'$399',display:'$399',tag:'2–3 Verified Leads · 10% Referral Commission',
+  starter:{name:'Sold Starter',raw:399,price:'$399',display:'$399',tag:'2–3 Verified Leads · 5% Referral Commission',
     whop:'https://whop.com/checkout/plan_50KgKdScPHIxm'},
-  pro:{name:'Sold Pro',raw:799,price:'$799',display:'$799',tag:'3–5 Verified Leads · 5% Referral Commission',
+  pro:{name:'Sold Pro',raw:799,price:'$799',display:'$799',tag:'3–5 Verified Leads · 10% Referral Commission',
     whop:'https://whop.com/checkout/plan_ioYvVuoBd89kt'},
   dominator:{name:'Sold Dominator',raw:1699,price:'$1,699',display:'$1,699',tag:'7–10 Verified Leads · Live Transfers Included',
     whop:'https://whop.com/checkout/plan_459Wz8hd01Uxy'}
@@ -6540,7 +6540,7 @@ function cbMatch(q){
 
   // referral
   if(/referral|refer|commission|earn|invite|affiliate/.test(q)){
-    return {text:`Great question! Our <strong>Referral Program</strong> pays you <strong>$399 flat commission</strong> for each successful referral. 🎁<br><br>How it works:<br>• Get your unique referral code<br>• Share with fellow agents<br>• They get 5% off, you earn $399<br>• No cap on referrals — unlimited earning<br>• Payouts within 7 business days<br><br><a onclick="showPage('referral');cbToggle();">Get your referral code →</a>`, chips:[{label:'💰 See pricing', q:'pricing'},{label:'📞 Talk to a human', q:'human'}]};
+    return {text:`Great question! Our <strong>Referral Program</strong> pays a commission on every plan someone buys through your link. 🎁<br><br>What you earn:<br>• <strong>Sold Starter</strong> — 5% commission<br>• <strong>Sold Pro</strong> — 10% commission<br>• <strong>Sold Dominator</strong> — flat $399<br>• Refer 5+ agents in a month — extra 10% on top<br><br>They get 5% off at checkout, you get paid within 7 business days. No cap on referrals.<br><br><a onclick="showPage('referral');cbToggle();">Get your referral code →</a>`, chips:[{label:'💰 See pricing', q:'pricing'},{label:'📞 Talk to a human', q:'human'}]};
   }
 
   // delivery time
