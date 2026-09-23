@@ -932,9 +932,10 @@ nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(1240px
 .ct-fresh-btn:hover{background:#fff;color:var(--navy);transform:translateY(-2px);}
 .ct-fresh-btn svg{width:14px;height:14px;}
 
-/* Office location map (inline SVG — always renders) */
+/* Office location map (live Google Maps embed) */
 .ct-gmap{position:relative;max-width:1180px;height:400px;margin:28px auto 0;border-radius:20px;overflow:hidden;
   box-shadow:0 22px 50px rgba(13,60,102,.12);border:1px solid rgba(13,60,102,.08);background:var(--gray-light);}
+.ct-gmap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;z-index:1;}
 .ct-gmap-art{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .ct-gmap-label{position:absolute;left:18px;top:18px;z-index:2;display:flex;align-items:flex-start;gap:10px;
   background:#fff;border-radius:14px;padding:12px 16px;max-width:300px;
@@ -950,6 +951,8 @@ nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);width:min(1240px
   border:1px solid rgba(13,60,102,.08);transition:transform .2s,box-shadow .2s;}
 .ct-gmap-fallback:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(13,60,102,.24);}
 .ct-gmap-fallback svg{width:13px;height:13px;}
+/* when the live embed loads it sits on top and our own overlays step aside */
+.ct-gmap.is-live .ct-gmap-label,.ct-gmap.is-live .ct-gmap-fallback{display:none;}
 @media(max-width:640px){.ct-gmap{height:320px;}.ct-gmap-label{max-width:calc(100% - 36px);}}
 
 @media(max-width:900px){
@@ -4036,7 +4039,6 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
       <!-- Pro (featured) -->
       <div class="pr-card pc2 reveal">
-        <span class="pr-card-badge">Most Popular</span>
         <div class="pr-card-media">
           <svg viewBox="0 0 340 130" preserveAspectRatio="none"><g fill="#fff" opacity=".85"><rect x="30" y="80" width="18" height="40" rx="3"/><rect x="65" y="65" width="18" height="55" rx="3"/><rect x="100" y="50" width="18" height="70" rx="3"/><rect x="135" y="35" width="18" height="85" rx="3"/><rect x="170" y="20" width="18" height="100" rx="3"/></g><path d="M30 100 L 180 30" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/></svg>
           <div class="pr-card-crest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.6 5.4 5.9.6-4.5 3.9 1.3 5.8L12 15.4l-5.3 2.8 1.3-5.8L3.5 8.5l5.9-.6z"/></svg></div>
@@ -4062,6 +4064,7 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
 
       <!-- Dominator -->
       <div class="pr-card pc3 reveal">
+        <span class="pr-card-badge">Most Popular</span>
         <div class="pr-card-media">
           <svg viewBox="0 0 340 130" preserveAspectRatio="none"><g fill="#fff"><path d="M40 100 L 90 60 L 140 90 L 200 40 L 260 80 L 300 30" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/><circle cx="40" cy="100" r="5"/><circle cx="90" cy="60" r="5"/><circle cx="140" cy="90" r="5"/><circle cx="200" cy="40" r="5"/><circle cx="260" cy="80" r="5"/><circle cx="300" cy="30" r="6"/></g></svg>
           <div class="pr-card-crest"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l3 3 3-6 3 6 3-3 3 3 3-6v13H3z"/><rect x="3" y="18" width="18" height="2"/></svg></div>
@@ -4838,19 +4841,13 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
         <button class="ct-fresh-btn" onclick="showPage('pricing')">Get Started With Us Today! <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════════
-           OFFICE LOCATION MAP
-           Rendered as inline SVG so it can never be blocked by an
-           ad-blocker, privacy extension or embed restriction.
-
-           To use a live Google Maps embed instead, replace the whole
-           <div class="ct-gmap"> block below with this one line:
-
-           <div class="ct-gmap reveal"><iframe src="https://www.google.com/maps?q=1650+Market+St,+Philadelphia,+PA&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="LeadToSold Office"></iframe></div>
-
-           ...and add back:  .ct-gmap iframe{width:100%;height:400px;border:0;display:block;}
-      ══════════════════════════════════════════════════════════ -->
-      <div class="ct-gmap reveal">
+      <!-- OFFICE LOCATION MAP
+           The drawn map below always renders. If Google's embed is reachable
+           it is injected on top of it (see initOfficeMap); if the browser,
+           an extension or a file:// origin blocks it, the drawn map stays. -->
+      <div class="ct-gmap reveal" id="ctGmap"
+           data-q="1650+Market+St,+Philadelphia,+PA+19103"
+           data-label="LeadToSold — 1650 Market Street, Suite 3600, Philadelphia, PA 19103">
         <svg class="ct-gmap-art" viewBox="0 0 1180 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="gmBg" x1="0" y1="0" x2="0" y2="1">
@@ -4896,8 +4893,8 @@ footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;back
           <span class="ct-gmap-pin"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s7-7.58 7-13a7 7 0 10-14 0c0 5.42 7 13 7 13z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.6" stroke="currentColor" stroke-width="2"/></svg></span>
           <span><strong>LeadToSold — Pennsylvania Office</strong>1650 Market Street, Suite 3600, Philadelphia, PA 19103</span>
         </div>
-        <a class="ct-gmap-fallback" href="https://www.google.com/maps/search/?api=1&query=1650+Market+Street,+Philadelphia,+PA+19103" target="_blank" rel="noopener">
-          Get Directions
+        <a class="ct-gmap-fallback" href="https://www.google.com/maps/search/?api=1&amp;query=1650+Market+Street,+Philadelphia,+PA+19103" target="_blank" rel="noopener">
+          Open in Google Maps
           <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -6664,6 +6661,48 @@ document.getElementById('welcomeOverlay').addEventListener('click',function(e){i
 
 // Prevent nav default
 document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+
+/* ── OFFICE MAP ────────────────────────────────────────────────
+   The drawn map in #ctGmap always renders. Google's embed is only
+   injected on top of it once we know the request actually gets out —
+   ad blockers, strict tracking protection and file:// origins all
+   block it, and a blocked iframe paints an ugly grey "content is
+   blocked" panel that would cover our own map. If anything fails,
+   the drawn map and the "Open in Google Maps" link stay put.        */
+(function(){
+  var box = document.getElementById('ctGmap');
+  if (!box || !('IntersectionObserver' in window)) return;
+  var started = false;
+
+  function src(){
+    return 'https://www.google.com/maps?q=' + box.dataset.q + '&z=15&output=embed';
+  }
+  function inject(){
+    var f = document.createElement('iframe');
+    var watchdog = setTimeout(drop, 7000);
+    function drop(){ if (f.parentNode) f.parentNode.removeChild(f); }
+    f.addEventListener('load', function(){ clearTimeout(watchdog); box.classList.add('is-live'); });
+    f.addEventListener('error', function(){ clearTimeout(watchdog); drop(); });
+    f.title = box.dataset.label;
+    f.loading = 'lazy';
+    f.referrerPolicy = 'no-referrer-when-downgrade';
+    f.setAttribute('allowfullscreen', '');
+    f.src = src();
+    box.appendChild(f);
+  }
+  function start(){
+    if (started) return; started = true;
+    if (location.protocol === 'file:') return;          // embeds are unreliable off disk
+    try {
+      fetch(src(), { mode: 'no-cors', cache: 'no-store' }).then(inject).catch(function(){});
+    } catch (e) { /* keep the drawn map */ }
+  }
+
+  new IntersectionObserver(function(entries, obs){
+    entries.forEach(function(en){ if (en.isIntersecting){ start(); obs.disconnect(); } });
+  }, { rootMargin: '200px' }).observe(box);
+})();
+
 </script>
 
 <!-- PAGE: PRIVACY -->
